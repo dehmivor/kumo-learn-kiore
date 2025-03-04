@@ -1,6 +1,6 @@
-# Kumo Run - Học Tiếng Nhật Qua Game 🎮🐻
+![image](https://github.com/user-attachments/assets/976fd822-7f49-4396-950b-4cdd4d9ad795)# Kumo Run - Học Tiếng Nhật Qua Game 🎮🐻
 
-![Kumo Run](https://your-image-link.com)
+![Kumo Run](https://raw.githubusercontent.com/dehmivor/kumo-learn-kiore/refs/heads/main/kumo-learn-kiore.png)
 
 ## 🚀 Giới Thiệu
 **Kumo Run** là một mini-game thú vị giúp bạn học tiếng Nhật một cách tự nhiên và vui nhộn! Điều khiển chú gấu **ʕ•ᴥ•ʔ** tránh chướng ngại vật bằng cách chọn đúng từ tiếng Nhật tương ứng với nghĩa tiếng Việt.
