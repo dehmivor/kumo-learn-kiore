@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kumo Run - Học tiếng Nhật</title>
     <style>
-        * { margin: 0; padding: 0; }
+        * { margin: 40; padding: 0; }
         body { text-align: center; font-family: Arial, sans-serif; background: #f4f4f4; }
         canvas { background: white; display: block; margin: 20px auto; border: 2px solid #333; }
     </style>
 </head>
 <body>
-    <h1>Kumo Run 🏃‍♂️</h1>
-    <p>Nhấn SPACE để nhảy! Chạm vào đúng từ tiếng Nhật để qua màn 🐻</p>
+    <h1>Kumo Run 👟🏃‍♀️‍➡️🏃‍➡️🏃</h1>
+    <p>Nhấn SPACE để nhảy! Chạm vào đúng từ tiếng Nhật để qua màn nha 🐻</p>
     <canvas id="gameCanvas" width="800" height="200"></canvas>
     <script>
         const canvas = document.getElementById("gameCanvas");
@@ -20,9 +20,9 @@
 
         let kumo = { x: 50, y: 150, width: 40, height: 40, dy: 0, jumping: false, icon: "ʕ•ᴥ•ʔ" };
         let obstacles = [
-            { x: 800, y: 150, wordVi: "Mặt trời", wordJp: "太陽", active: true },
-            { x: 1200, y: 150, wordVi: "Nước", wordJp: "水", active: true },
-            { x: 1600, y: 150, wordVi: "Cây", wordJp: "木", active: true }
+            { x: 800, y: 150, wordVi: "Mặt trời", wordJp: "太陽", wrongJp: "月", active: true },
+            { x: 1200, y: 150, wordVi: "Nước", wordJp: "水", wrongJp: "火", active: true },
+            { x: 1600, y: 150, wordVi: "Cây", wordJp: "木", wrongJp: "石", active: true }
         ];
         let gravity = 1.5;
         let speed = 5;
@@ -42,7 +42,16 @@
             obstacles.forEach(obstacle => {
                 if (clickX >= obstacle.x && clickX <= obstacle.x + 50 && 
                     clickY >= obstacle.y - 20 && clickY <= obstacle.y + 40) {
-                    obstacle.active = false;
+                    if (Math.random() > 0.5) {
+                        if (confirm(`Bạn chọn: ${obstacle.wordJp}. Xác nhận?`)) {
+                            obstacle.active = false;
+                        }
+                    } else {
+                        if (confirm(`Bạn chọn: ${obstacle.wrongJp}. Xác nhận?`)) {
+                            gameOver = true;
+                            alert("Sai rồi! Game Over! Nhấn F5 để chơi lại.");
+                        }
+                    }
                 }
             });
         });
@@ -82,8 +91,9 @@
                 if (obstacle.active) {
                     ctx.fillStyle = "black";
                     ctx.font = "20px Arial";
-                    ctx.fillText(obstacle.wordVi, obstacle.x, obstacle.y - 10);
+                    ctx.fillText(obstacle.wordVi, obstacle.x, obstacle.y - 30);
                     ctx.fillText(obstacle.wordJp, obstacle.x, obstacle.y + 30);
+                    ctx.fillText(obstacle.wrongJp, obstacle.x + 50, obstacle.y + 30);
                 }
             });
         }
