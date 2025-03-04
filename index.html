@@ -12,17 +12,17 @@
 </head>
 <body>
     <h1>Kumo Run 🏃‍♂️</h1>
-    <p>Nhấn SPACE để nhảy! Học tiếng Nhật cùng Kumo 🐻</p>
+    <p>Nhấn SPACE để nhảy! Chạm vào đúng từ tiếng Nhật để qua màn 🐻</p>
     <canvas id="gameCanvas" width="800" height="200"></canvas>
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        let kumo = { x: 50, y: 150, width: 40, height: 40, dy: 0, jumping: false };
+        let kumo = { x: 50, y: 150, width: 40, height: 40, dy: 0, jumping: false, icon: "ʕ•ᴥ•ʔ" };
         let obstacles = [
-            { x: 800, y: 150, wordVi: "Mặt trời", wordJp: "太陽" },
-            { x: 1200, y: 150, wordVi: "Nước", wordJp: "水" },
-            { x: 1600, y: 150, wordVi: "Cây", wordJp: "木" }
+            { x: 800, y: 150, wordVi: "Mặt trời", wordJp: "太陽", active: true },
+            { x: 1200, y: 150, wordVi: "Nước", wordJp: "水", active: true },
+            { x: 1600, y: 150, wordVi: "Cây", wordJp: "木", active: true }
         ];
         let gravity = 1.5;
         let speed = 5;
@@ -35,6 +35,18 @@
             }
         });
 
+        canvas.addEventListener("click", function(event) {
+            const clickX = event.clientX - canvas.getBoundingClientRect().left;
+            const clickY = event.clientY - canvas.getBoundingClientRect().top;
+            
+            obstacles.forEach(obstacle => {
+                if (clickX >= obstacle.x && clickX <= obstacle.x + 50 && 
+                    clickY >= obstacle.y - 20 && clickY <= obstacle.y + 40) {
+                    obstacle.active = false;
+                }
+            });
+        });
+
         function update() {
             if (gameOver) return;
             kumo.y += kumo.dy;
@@ -45,29 +57,34 @@
             }
             
             obstacles.forEach(obstacle => {
-                obstacle.x -= speed;
-                if (obstacle.x + 50 < 0) {
-                    obstacle.x = 800 + Math.random() * 400;
-                }
-                
-                if (kumo.x < obstacle.x + 50 && kumo.x + kumo.width > obstacle.x &&
-                    kumo.y < obstacle.y + 40 && kumo.y + kumo.height > obstacle.y) {
-                    gameOver = true;
-                    alert("Game Over! Nhấn F5 để chơi lại.");
+                if (obstacle.active) {
+                    obstacle.x -= speed;
+                    if (obstacle.x + 50 < 0) {
+                        obstacle.x = 800 + Math.random() * 400;
+                        obstacle.active = true;
+                    }
+                    
+                    if (kumo.x < obstacle.x + 50 && kumo.x + kumo.width > obstacle.x &&
+                        kumo.y < obstacle.y + 40 && kumo.y + kumo.height > obstacle.y) {
+                        gameOver = true;
+                        alert("Game Over! Nhấn F5 để chơi lại.");
+                    }
                 }
             });
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "brown";
-            ctx.fillRect(kumo.x, kumo.y, kumo.width, kumo.height);
+            ctx.font = "30px Arial";
+            ctx.fillText(kumo.icon, kumo.x, kumo.y + 30);
             
             obstacles.forEach(obstacle => {
-                ctx.fillStyle = "black";
-                ctx.font = "20px Arial";
-                ctx.fillText(obstacle.wordVi, obstacle.x, obstacle.y - 10);
-                ctx.fillText(obstacle.wordJp, obstacle.x, obstacle.y + 30);
+                if (obstacle.active) {
+                    ctx.fillStyle = "black";
+                    ctx.font = "20px Arial";
+                    ctx.fillText(obstacle.wordVi, obstacle.x, obstacle.y - 10);
+                    ctx.fillText(obstacle.wordJp, obstacle.x, obstacle.y + 30);
+                }
             });
         }
 
