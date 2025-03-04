@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/976fd822-7f49-4396-950b-4cdd4d9ad795)# Kumo Run - Học Tiếng Nhật Qua Game 🎮🐻
+# Kumo Run - Học Tiếng Nhật Qua Game 🎮🐻
 
 ![Kumo Run](https://raw.githubusercontent.com/dehmivor/kumo-learn-kiore/refs/heads/main/kumo-learn-kiore.png)
 
