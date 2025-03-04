@@ -2,61 +2,84 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Kumo Run - Học tiếng Nhật" />
+    <meta property="og:description" content="Trò chơi giúp bạn học tiếng Nhật một cách thú vị!" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kumo Run - Học tiếng Nhật</title>
     <style>
-        * { margin: 0; padding: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { text-align: center; font-family: Arial, sans-serif; background: orange; }
         canvas { background: white; display: block; margin: 20px auto; border: 2px solid #333; }
-        .word { font-size: 60px; font-weight: bold; position: absolute; top: 100px; left: 50%; transform: translateX(-50%); }
+        .ground { height: 20px; background: green; position: absolute; bottom: 0; width: 100%; }
     </style>
 </head>
 <body>
     <h1>Kumo Run 👟🏃‍♀️‍➡️🏃‍➡️🏃</h1>
-    <p>Nhấn SPACE để nhảy! Chạm vào đúng từ tiếng Nhật để qua màn nha 🐻</p>
-    <div id="word" class="word">Mặt trời</div>
+    <p>Nhấn SPACE để nhảy! Chạm vào đúng từ tiếng Nhật để qua màn 🐻</p>
     <canvas id="gameCanvas" width="800" height="300"></canvas>
+    <div class="ground"></div>
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
         let kumo = { x: 50, y: 220, width: 40, height: 40, dy: 0, jumping: false, icon: "ʕ•ᴥ•ʔ" };
-        let gravity = 1.2;
-        let speed = 5;
-        let gameOver = false;
-        let showObstacles = false;
         let words = [
             { vi: "Mặt trời", jp: "太陽" },
             { vi: "Nước", jp: "水" },
             { vi: "Cây", jp: "木" },
-            { vi: "Gió", jp: "風" },
             { vi: "Lửa", jp: "火" },
-            { vi: "Bầu trời", jp: "空" },
-            { vi: "Trái đất", jp: "地球" },
-            { vi: "Mặt trăng", jp: "月" },
-            { vi: "Đá", jp: "石" },
-            { vi: "Sóng", jp: "波" }
+            { vi: "Gió", jp: "風" },
+            { vi: "Trăng", jp: "月" },
+            { vi: "Đất", jp: "土" },
+            { vi: "Hoa", jp: "花" },
+            { vi: "Trời", jp: "空" },
+            { vi: "Mưa", jp: "雨" }
         ];
-        let currentWordIndex = 0;
+        
+        let currentWord = 0;
         let obstacles = [];
+        let gravity = 1.5;
+        let speed = 4;
+        let gameOver = false;
+        let showObstacles = false;
 
-        function nextWord() {
-            currentWordIndex = (currentWordIndex + 1) % words.length;
-            document.getElementById("word").innerText = words[currentWordIndex].vi;
+        function spawnObstacles() {
+            let startX = 800;
+            words.forEach((word, index) => {
+                obstacles.push({
+                    x: startX + index * 300,
+                    y: 220,
+                    wordJp: word.jp,
+                    active: true
+                });
+            });
         }
 
         document.addEventListener("keydown", function(event) {
             if (event.code === "Space" && !kumo.jumping) {
-                kumo.dy = -15;
+                kumo.dy = -20;
                 kumo.jumping = true;
             }
         });
 
-        setTimeout(() => { showObstacles = true; }, 2000);
+        canvas.addEventListener("click", function(event) {
+            const clickX = event.clientX - canvas.getBoundingClientRect().left;
+            const clickY = event.clientY - canvas.getBoundingClientRect().top;
+            
+            obstacles.forEach(obstacle => {
+                if (clickX >= obstacle.x && clickX <= obstacle.x + 50 && 
+                    clickY >= obstacle.y - 20 && clickY <= obstacle.y + 40 && obstacle.active) {
+                    if (confirm(`Bạn chọn: ${obstacle.wordJp}. Xác nhận?`)) {
+                        obstacle.active = false;
+                        currentWord++;
+                    }
+                }
+            });
+        });
 
         function update() {
             if (gameOver) return;
-            
             kumo.y += kumo.dy;
             kumo.dy += gravity;
             if (kumo.y >= 220) {
@@ -66,15 +89,12 @@
 
             if (showObstacles) {
                 obstacles.forEach(obstacle => {
-                    obstacle.x -= speed;
-                    if (obstacle.x + obstacle.width < 0) {
-                        obstacle.x = 800 + Math.random() * 200;
-                    }
-                    
-                    if (kumo.x < obstacle.x + obstacle.width && kumo.x + kumo.width > obstacle.x &&
-                        kumo.y < obstacle.y + obstacle.height && kumo.y + kumo.height > obstacle.y) {
-                        gameOver = true;
-                        alert("Game Over! Nhấn F5 để chơi lại.");
+                    if (obstacle.active) {
+                        obstacle.x -= speed;
+                        if (obstacle.x + 50 < 0) {
+                            gameOver = true;
+                            alert("Game Over! Nhấn F5 để chơi lại.");
+                        }
                     }
                 });
             }
@@ -82,19 +102,21 @@
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "black";
+            ctx.font = "40px Arial";
+            ctx.fillText(words[currentWord % words.length].vi, canvas.width / 2 - 50, 100);
+
             ctx.font = "30px Arial";
             ctx.fillText(kumo.icon, kumo.x, kumo.y + 30);
-
+            
             if (showObstacles) {
                 obstacles.forEach(obstacle => {
-                    ctx.fillStyle = "red";
-                    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                    if (obstacle.active) {
+                        ctx.fillStyle = "black";
+                        ctx.font = "20px Arial";
+                        ctx.fillText(obstacle.wordJp, obstacle.x, obstacle.y);
+                    }
                 });
             }
-
-            ctx.fillStyle = "green";
-            ctx.fillRect(0, 260, canvas.width, 40);
         }
 
         function loop() {
@@ -103,9 +125,10 @@
             requestAnimationFrame(loop);
         }
 
-        for (let i = 0; i < 5; i++) {
-            obstacles.push({ x: 800 + i * 200, y: 220, width: 40, height: 40 });
-        }
+        setTimeout(() => {
+            showObstacles = true;
+            spawnObstacles();
+        }, 2000);
 
         loop();
     </script>
