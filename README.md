@@ -29,4 +29,4 @@ Kumo Run được phát triển dựa trên ứng dụng **Kiore**, nền tảng
 📥 **Tải ngay Kiore để học tiếng Nhật dễ dàng hơn!**
 
 ---
-📌 **Liên hệ**: [Facebook](https://facebook.com/kiore) | [Website](https://dehmivor.itch.io/kiore/devlog/892209/kiore?fbclid=IwY2xjawIzU05leHRuA2FlbQIxMAABHVhM8x0lTM1dczKXbZpW8AJmAC0rH5TlMNufFyScPn33W1kzjek9LpoysA_aem_yCUR0Wz7ZhJBx9W32fzrdQ)
+📌 **Liên hệ**: [Facebook](https://www.facebook.com/kioreapp) | [Website](https://dehmivor.itch.io/kiore/devlog/892209/kiore?fbclid=IwY2xjawIzU05leHRuA2FlbQIxMAABHVhM8x0lTM1dczKXbZpW8AJmAC0rH5TlMNufFyScPn33W1kzjek9LpoysA_aem_yCUR0Wz7ZhJBx9W32fzrdQ)
