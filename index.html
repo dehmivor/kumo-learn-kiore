@@ -19,7 +19,11 @@
         const ctx = canvas.getContext("2d");
 
         let kumo = { x: 50, y: 150, width: 40, height: 40, dy: 0, jumping: false };
-        let obstacle = { x: 800, y: 150, width: 20, height: 40 };
+        let obstacles = [
+            { x: 800, y: 150, wordVi: "Mặt trời", wordJp: "太陽" },
+            { x: 1200, y: 150, wordVi: "Nước", wordJp: "水" },
+            { x: 1600, y: 150, wordVi: "Cây", wordJp: "木" }
+        ];
         let gravity = 1.5;
         let speed = 5;
         let gameOver = false;
@@ -40,24 +44,31 @@
                 kumo.jumping = false;
             }
             
-            obstacle.x -= speed;
-            if (obstacle.x + obstacle.width < 0) {
-                obstacle.x = 800;
-            }
-            
-            if (kumo.x < obstacle.x + obstacle.width && kumo.x + kumo.width > obstacle.x &&
-                kumo.y < obstacle.y + obstacle.height && kumo.y + kumo.height > obstacle.y) {
-                gameOver = true;
-                alert("Game Over! Nhấn F5 để chơi lại.");
-            }
+            obstacles.forEach(obstacle => {
+                obstacle.x -= speed;
+                if (obstacle.x + 50 < 0) {
+                    obstacle.x = 800 + Math.random() * 400;
+                }
+                
+                if (kumo.x < obstacle.x + 50 && kumo.x + kumo.width > obstacle.x &&
+                    kumo.y < obstacle.y + 40 && kumo.y + kumo.height > obstacle.y) {
+                    gameOver = true;
+                    alert("Game Over! Nhấn F5 để chơi lại.");
+                }
+            });
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "brown";
             ctx.fillRect(kumo.x, kumo.y, kumo.width, kumo.height);
-            ctx.fillStyle = "black";
-            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            
+            obstacles.forEach(obstacle => {
+                ctx.fillStyle = "black";
+                ctx.font = "20px Arial";
+                ctx.fillText(obstacle.wordVi, obstacle.x, obstacle.y - 10);
+                ctx.fillText(obstacle.wordJp, obstacle.x, obstacle.y + 30);
+            });
         }
 
         function loop() {
