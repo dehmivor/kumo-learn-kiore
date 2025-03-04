@@ -5,34 +5,43 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Kumo Run - Học tiếng Nhật" />
     <meta property="og:description" content="Trò chơi giúp bạn học tiếng Nhật một cách thú vị!" />
-    <meta property="og:image" content="http://bit.ly/4bsM6zL" />
-    <meta property="og:url" content="https://dehmivor.github.io/kumo-learn-kiore/" />
-    <meta property="og:type" content="website" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kumo Run - Học tiếng Nhật</title>
     <style>
-        * { margin: 40; padding: 0; }
-        body { text-align: center; font-family: Arial, sans-serif; background: #f4f4f4; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { text-align: center; font-family: Arial, sans-serif; background: orange; }
         canvas { background: white; display: block; margin: 20px auto; border: 2px solid #333; }
     </style>
 </head>
 <body>
-    <h1>Kumo Run 👟🏃‍♀️‍➡️🏃‍➡️🏃</h1>
-    <p>Nhấn SPACE để nhảy! Chạm vào đúng từ tiếng Nhật để qua màn nha 🐻</p>
+    <h1>Kumo Run 👟🏃‍♂️➡️🏃</h1>
+    <p>Nhấn SPACE để nhảy! Chạm vào đúng từ tiếng Nhật để qua màn 🐻</p>
     <canvas id="gameCanvas" width="800" height="200"></canvas>
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
         let kumo = { x: 50, y: 150, width: 40, height: 40, dy: 0, jumping: false, icon: "ʕ•ᴥ•ʔ" };
-        let obstacles = [
-            { x: 800, y: 150, wordVi: "Mặt trời", wordJp: "太陽", wrongJp: "月", active: true },
-            { x: 1200, y: 150, wordVi: "Nước", wordJp: "水", wrongJp: "火", active: true },
-            { x: 1600, y: 150, wordVi: "Cây", wordJp: "木", wrongJp: "石", active: true }
-        ];
         let gravity = 1.5;
         let speed = 5;
         let gameOver = false;
+
+        let words = [
+            { vi: "Mặt trời", jp: "太陽", wrong: "月" },
+            { vi: "Nước", jp: "水", wrong: "火" },
+            { vi: "Cây", jp: "木", wrong: "石" },
+            { vi: "Trái đất", jp: "地球", wrong: "宇宙" },
+            { vi: "Gió", jp: "風", wrong: "雨" },
+            { vi: "Lửa", jp: "火", wrong: "水" },
+            { vi: "Trời", jp: "空", wrong: "土" },
+            { vi: "Ngọn núi", jp: "山", wrong: "川" },
+            { vi: "Bông hoa", jp: "花", wrong: "草" },
+            { vi: "Con đường", jp: "道", wrong: "橋" }
+        ];
+
+        let obstacles = words.map((word, index) => ({
+            x: 800 + index * 300, y: 150, wordVi: word.vi, wordJp: word.jp, wrongJp: word.wrong, active: true, showJp: false
+        }));
 
         document.addEventListener("keydown", function(event) {
             if (event.code === "Space" && !kumo.jumping) {
@@ -41,29 +50,9 @@
             }
         });
 
-        canvas.addEventListener("click", function(event) {
-            const clickX = event.clientX - canvas.getBoundingClientRect().left;
-            const clickY = event.clientY - canvas.getBoundingClientRect().top;
-            
-            obstacles.forEach(obstacle => {
-                if (clickX >= obstacle.x && clickX <= obstacle.x + 50 && 
-                    clickY >= obstacle.y - 20 && clickY <= obstacle.y + 40) {
-                    if (Math.random() > 0.5) {
-                        if (confirm(`Bạn chọn: ${obstacle.wordJp}. Xác nhận?`)) {
-                            obstacle.active = false;
-                        }
-                    } else {
-                        if (confirm(`Bạn chọn: ${obstacle.wrongJp}. Xác nhận?`)) {
-                            gameOver = true;
-                            alert("Sai rồi! Game Over! Nhấn F5 để chơi lại.");
-                        }
-                    }
-                }
-            });
-        });
-
         function update() {
             if (gameOver) return;
+
             kumo.y += kumo.dy;
             kumo.dy += gravity;
             if (kumo.y >= 150) {
@@ -74,9 +63,13 @@
             obstacles.forEach(obstacle => {
                 if (obstacle.active) {
                     obstacle.x -= speed;
+                    if (obstacle.x < 500) {
+                        obstacle.showJp = true; // Hiện chữ Nhật khi gần nhân vật
+                    }
                     if (obstacle.x + 50 < 0) {
                         obstacle.x = 800 + Math.random() * 400;
                         obstacle.active = true;
+                        obstacle.showJp = false;
                     }
                     
                     if (kumo.x < obstacle.x + 50 && kumo.x + kumo.width > obstacle.x &&
@@ -98,8 +91,9 @@
                     ctx.fillStyle = "black";
                     ctx.font = "20px Arial";
                     ctx.fillText(obstacle.wordVi, obstacle.x, obstacle.y - 30);
-                    ctx.fillText(obstacle.wordJp, obstacle.x, obstacle.y + 30);
-                    ctx.fillText(obstacle.wrongJp, obstacle.x + 50, obstacle.y + 30);
+                    if (obstacle.showJp) {
+                        ctx.fillText(obstacle.wordJp, obstacle.x, obstacle.y + 60); // Chữ Nhật thấp hơn
+                    }
                 }
             });
         }
